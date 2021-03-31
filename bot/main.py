@@ -4,7 +4,6 @@ import random
 from discord.ext import commands
 
 token = os.getenv("DISCORD_BOT_TOKEN")
-
 bot = commands.Bot(command_prefix='!')
 player_list = []
 # key: who is writing the word, value: for whom
@@ -35,7 +34,7 @@ async def go(ctx):
     global word_dict
     global game_state
     if game_state != 3:
-        ctx.send("Not all players typed in a word yet.")
+        await ctx.send("Not all players typed in a word yet.")
         return
 
     for this_player in player_list:
@@ -45,7 +44,7 @@ async def go(ctx):
             if other_player != this_player:
                 await this_player.create_dm()
                 await this_player.dm_channel.send("{}: {}".format(other_player.name, word_dict[other_player]))
-    ctx.send("Have fun. Type !reset to reset the game.") 
+    await ctx.send("Have fun. Type !reset to reset the game.") 
 
 @bot.command(name='reset', help='Reset wer bin ich.')
 async def reset(ctx):
@@ -53,7 +52,7 @@ async def reset(ctx):
     if player == bot.user:
         return
     reset_game()
-    ctx.send("Wer bin ich reseted.")
+    await ctx.send("Wer bin ich reseted.")
 
 @bot.command(name='start', help='Start a round of Wer bin ich.')
 async def start(ctx):
@@ -62,9 +61,9 @@ async def start(ctx):
         return
     global game_state
     if game_state != 0:
-        ctx.send("Please reset the game")
+        await ctx.send("Please reset the game")
         return
-    ctx.send("Started a game of Wer bin ich. Write !dtf in the chat to play along. Write !ready to start the word phase.")
+    await ctx.send("Started a game of Wer bin ich. Write !dtf in the chat to play along. Write !ready to start the word phase.")
     game_state=1
 
 @bot.command(name='dtf', help='Indicate that you are down to fuck for a round of Wer bin ich.')
@@ -95,12 +94,12 @@ async def ready(ctx):
     if player == bot.user:
         return
     if game_state != 1:
-        ctx.send("The game state is not resetted.")
+        await ctx.send("The game state is not resetted.")
         return
     all_players_string = ""
     for p in player_list:
         all_players_string += p.name + " "
-    ctx.send("Players in list: " + all_players_string)
+    await ctx.send("Players in list: " + all_players_string)
     random.shuffle(player_list)
     for i, player in enumerate(player_list):
         if i<len(player_list)-1:
@@ -113,7 +112,7 @@ async def ready(ctx):
         await player.dm_channel.send(
             f'Welcome to Wer bin ich, {player.name}, choose a word for {player_connection[player].name} by entering !word __your_word__. Do not use spaces.'
         )
-    ctx.send("Please send your words in private chat.")
+    await ctx.send("Please send your words in private chat.")
     game_state = 2
 
 def check_all_words_there():
@@ -145,7 +144,7 @@ async def word(ctx, word: str):
         f'You chose, {word}, for {player_connection[player].name}!'
     )
     if check_all_words_there():
-        ctx.send("All players are ready! Type !go to start the funs.")
+        await ctx.send("All players are ready! Type !go to start the funs.")
         game_state = 3
 
 bot.run(token)
