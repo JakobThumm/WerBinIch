@@ -1,11 +1,9 @@
 # bot.py
 import os
 import random
-from dotenv import load_dotenv
 from discord.ext import commands
 
-load_dotenv()
-TOKEN = os.getenv('DISCORD_TOKEN')
+token = os.getenv("DISCORD_BOT_TOKEN")
 
 bot = commands.Bot(command_prefix='!')
 player_list = []
@@ -150,4 +148,4 @@ async def word(ctx, word: str):
         ctx.send("All players are ready! Type !go to start the funs.")
         game_state = 3
 
-bot.run(TOKEN)
+bot.run(token)
