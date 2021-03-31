@@ -1,3 +1,2 @@
-random
 discord
 python-dotenv
